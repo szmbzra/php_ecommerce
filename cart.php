@@ -1,3 +1,46 @@
+<?php
+session_start();
+if(isset($_POST['add_to_cart'])){
+if(isset($_SESSION['cart'])){
+$product_array_ids = array_column($_SESSION['cart'],"product_id");
+if(!in_array($_POST['product_id'], $product_array_ids)){
+$product_array = array(
+'product_id' => $_POST['product_id'],
+'product_name' => $_POST['product_name'],
+'product_price' => $_POST['product_price'],
+'product_image' =>$_POST['product_image'],
+'product_quantity'=> $_POST['product_quantity']
+);
+$_SESSION['cart'][$product_id] = $product_array;
+
+}else{
+echo '<script>alert("product was already added")</script>';
+// echo '<script>window.location="index.php";</script>';
+}
+
+}else{
+$product_id= $_POST['product_id'];
+$product_name = $_POST['product_name'];
+$product_price = $_POST['product_price'];
+$product_image = $_POST['product_image'];
+$product_quantity= $_POST['product_quantity'];
+$product_array = array(
+'product_id' => $product_id,
+'product_name' => $product_name,
+'product_price' => $product_price,
+'product_image' => $product_image,
+'product_quantity'=> $product_quantity
+);
+$_SESSION['cart'][$product_id] = $product_array;
+
+}
+
+}else{
+  header ('location: index.php');
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -30,12 +73,12 @@
               <a class="nav-link" href="#">Blog</a>
             </li>
             <li class="nav-item col-lg-3">
-              <a class="nav-link" href="#">Contact Us</a>
+              <a class="nav-link" href="contact.html">Contact Us</a>
             </li>
-            <li class="nav-item">
-              <i class="fas fa-shopping-cart"></i>
-              <i class="fas fa-user"></i>
-            </li>
+          <li class="nav-item">
+            <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+           <a href="account.html"><i class="fas fa-user"></i></a>
+          </li>
           </ul>
         </div>
       </div>
@@ -52,19 +95,20 @@
       <th>Quantity</th>
       <th>Subtotal</th>
     </tr>
+    <?php  foreach($_SESSION['cart'] as $key =>$value){?>
     <tr>
       <td>
         <div class="product-info">
-          <img src="/assets/imgs/featured.jpg" alt="">
+          <img src="/assets/imgs/<?php echo $value['product_image']; ?>" alt="">
        <div>
-        <p>White Shoes</p>
-        <small><span>$</span>155</small>
+        <p><?php echo $value['product_name']; ?></p>
+        <small><span>$</span><?php echo $value['product_price']; ?></small>
         <br>
         <a href="#" class="remove-btn">Remove</a>
          </div>
           </div>
       </td>
-      <td><input type="number" name="" values="1" id="">
+      <td><input type="number" name="" values="<?php echo $value['product_quantity']; ?>" id="">
         <a href="#" class="edit-btn">Edit</a>
       </td>
       <td>
@@ -72,46 +116,8 @@
         <span class="product-price">155</span>
       </td>
     </tr>
-    <tr>
-      <td>
-        <div class="product-info">
-          <img src="/assets/imgs/featured.jpg" alt="">
-       <div>
-        <p>White Shoes</p>
-        <small><span>$</span>155</small>
-        <br>
-        <a href="#" class="remove-btn">Remove</a>
-         </div>
-          </div>
-      </td>
-      <td><input type="number" name="" values="1" id="">
-        <a href="#" class="edit-btn">Edit</a>
-      </td>
-      <td>
-        <span>$</span>
-        <span class="product-price">155</span>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <div class="product-info">
-          <img src="/assets/imgs/featured.jpg" alt="">
-       <div>
-        <p>White Shoes</p>
-        <small><span>$</span>155</small>
-        <br>
-        <a href="#" class="remove-btn">Remove</a>
-         </div>
-          </div>
-      </td>
-      <td><input type="number" name="" values="1" id="">
-        <a href="#" class="edit-btn">Edit</a>
-      </td>
-      <td>
-        <span>$</span>
-        <span class="product-price">155</span>
-      </td>
-    </tr>
+<?php } ?>
+
   </table>
   <div class="cart-total">
     <table>
